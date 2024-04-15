@@ -1,0 +1,32 @@
+function Tooltip(props) {
+    const {d, x, y} = props;
+    console.log(d);
+    if (x === null|!d) {
+        return <div></div>;
+    } else {
+        const divStyle = {
+            position: "absolute",
+            textAlign: "left",
+            width: "150px",
+            height: "120px",
+            padding: "2px",
+            font: "12px sans-serif",
+            background: "lightgreen",
+            border: "0px",
+            borderRadius: "8px",
+            pointerEvents: "none",
+            left: `${x+10}px`,
+            top: `${y}px`
+        };
+        return (<div style={divStyle} >
+            <p>{d.AirlineName}</p>
+            <p>Trading Info:</p>
+            <ul> 
+            <li>Open: {d.Count}</li>
+            <li>High: {d.AirlineID}</li>
+            </ul>
+            </div>)
+    };  
+}
+
+export { Tooltip };
