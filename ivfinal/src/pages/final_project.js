@@ -82,7 +82,7 @@ function IndexPerformance(){
     const map_width = 600;
     const map_height = 400;
     const hub_width = 1000;
-    const hub_height = 600;
+    const hub_height = 500;
 
 
     //

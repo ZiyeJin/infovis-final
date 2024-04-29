@@ -19,7 +19,7 @@ export function BarChart (props) {
     
     const xScale = scaleLinear().range([0, width]).domain([minimunRet, maximunRet]).nice();
     const yScale = scaleBand().range([0, height]).domain(data.map(a => a.Index)).padding(0.2) //The domain is the list of ailines names
-    let color = (d) => d.Index===selectedIndex? "#b09a0c":"#5a1e8a";
+    let color = (d) => d.Index===selectedIndex? "#EF8BEE":"#5a1e8a";
    
     //const [selectedBar, setSelectedBar] = useState(null);
     const onClick = (d) => {
@@ -42,7 +42,7 @@ export function BarChart (props) {
                     height={yScale.bandwidth()}
                     onClick={() => onClick(d)}
                     stroke="black"
-                    fill={selectedBar === d.Index ? "#b09a0c" : "#5a1e8a"}
+                    fill={selectedBar === d.Index ? "#EF8BEE" : "#5a1e8a"}
                 />
             ))}
         <YAxis yScale={yScale} height={height} offsetX={offsetX}/>
