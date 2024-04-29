@@ -1,33 +1,25 @@
 import { useRef, useEffect } from "react";
-// import { groupBy } from "lodash"; // Import lodash for grouping
 import * as d3 from "d3";
 
 function TreeMap({ width, height, weights, selectedIndex }) {
-  // Ref for SVG element
   const svgRef = useRef();
   console.log(selectedIndex)
 
   useEffect(() => {
     if (!weights || !selectedIndex) return;
 
-    // Group weights data by index using lodash
-    // Filter the weights data based on the selected index
     const filteredData = weights.filter((item) => item.Index === selectedIndex);
 
-    // Convert filtered data to array of objects
     const data = filteredData.map((item) => ({
       Industry: item.Industry,
       MktCapPer: item.MktCapPer,
-      // Optionally include other properties from the data if needed
     }));
 
-    // Create hierarchy from filtered data
     const root = d3
       .hierarchy({ children: data })
       .sum((d) => d.MktCapPer || 0); // Sum market cap percentages
 
 
-    // Initialize treemap layout
     const treemap = d3
       .treemap()
       .size([width, height])
@@ -36,6 +28,10 @@ function TreeMap({ width, height, weights, selectedIndex }) {
 
     // Generate treemap layout
     treemap(root);
+    
+    const saturationScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.MktCapPer)])
+      .range([0.3, 1]); // Adjust saturation range as needed
 
     // Select SVG element
     const svg = d3.select(svgRef.current);
@@ -54,8 +50,8 @@ function TreeMap({ width, height, weights, selectedIndex }) {
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
       .style("fill", "#5a1e8a")
-      .style("stroke", "black");
-      // .style("stroke-width", "2");
+      .style("stroke", "black")
+      .style("stroke-width", "2");
 
     // Add text labels for Industry
     svg
