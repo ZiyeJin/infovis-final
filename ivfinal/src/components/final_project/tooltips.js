@@ -8,7 +8,7 @@ function Tooltip(props) {
             position: "absolute",
             textAlign: "left",
             width: "150px",
-            height: "120px",
+            height: "180px",
             padding: "2px",
             font: "12px sans-serif",
             background: "lightgreen",
@@ -19,11 +19,15 @@ function Tooltip(props) {
             top: `${y}px`
         };
         return (<div style={divStyle} >
-            <p>{d.AirlineName}</p>
+            <p>{d.Index}</p>
             <p>Trading Info:</p>
             <ul> 
-            <li>Open: {d.Count}</li>
-            <li>High: {d.AirlineID}</li>
+            <li>Location: {d.Location}</li>
+            <li>Open: {d.Open.toFixed(2)}</li>
+            <li>High: {d.High.toFixed(2)}</li>
+            <li>Low: {d.Low.toFixed(2)}</li>
+            <li>Close: {d.Close.toFixed(2)}</li>
+            <li>Return%: {d.Return.toFixed(2)}</li>
             </ul>
             </div>)
     };  
