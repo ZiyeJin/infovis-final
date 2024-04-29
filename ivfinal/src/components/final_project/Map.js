@@ -4,7 +4,11 @@ import { geoPath, geoMercator } from "d3-geo";
 
 
 function Map(props){
-    const {width, height, countries, alldata, selectedIndex, selectedDate} = props;
+    const {width, height, countries, alldata, selectedIndex, selectedDate, setSelectedIndex, setSelectedBar} = props;
+    const handlePointClick = (index) => {
+        setSelectedIndex(index);
+        setSelectedBar(index);
+    };
 
     const data = alldata.filter((d) => {
         
@@ -36,6 +40,7 @@ function Map(props){
                 cy={projection([d.Longitude, d.Latitude])[1]}
                 r={d.Index === selectedIndex ? 8 : 3} 
                 fill={d.Return < 0 ? "#008000" : "#FF0000"} 
+                onClick={() => handlePointClick(d.Index)}
             />
         ))}
     </g>

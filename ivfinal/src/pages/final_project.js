@@ -72,6 +72,7 @@ function IndexPerformance(){
     const [tooltipY, setTooltipY] = React.useState(null);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [selectedIndex, setSelectedIndex]=React.useState(null);
+    const [selectedBar, setSelectedBar] = React.useState(null);
 
     const barchart_width = 400;
     const barchart_height = 400;
@@ -86,12 +87,8 @@ function IndexPerformance(){
 
     //
     const weights = useWeights(weightsUrl)
-    //console.log(weights)
     const stkdata = useStkData(dataUrl)
-    // console.log(stkdata)
     const testdata = useStkData(testdataUrl)
-    // console.log(testdata)
-    //
 
     const map = useMap(mapUrl);
     if (!map || !testdata) {
@@ -109,9 +106,10 @@ function IndexPerformance(){
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-    //console.log(selectedDate)
-    
-    // console.log(indices);
+    const handleSelectIndexChanged = (index) => {
+        setSelectedIndex(index);
+        setSelectedBar(index);
+    };
 
 
     return (<Container >
@@ -135,7 +133,8 @@ function IndexPerformance(){
                     <svg className={styles.svgStyle} id={"barchart"} width={barchart_width} height={barchart_height} onMouseMove={handleMouseMove}>
                         <BarChart offsetX={barchart_margin.left} offsetY={barchart_margin.top} 
                             height={barchart_inner_height} width={barchart_inner_width} alldata={stkdata}
-                            selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedDate={selectedDate}
+                            selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedDate={selectedDate} 
+                            selectedBar = {selectedBar} setSelectedBar={setSelectedBar}
                         />
                     </svg>
                 </Col>
@@ -145,6 +144,7 @@ function IndexPerformance(){
                         <Map width={map_width} height={map_height} 
                             countries={map} alldata={stkdata}
                             selectedIndex={selectedIndex} selectedDate={selectedDate} 
+                            setSelectedIndex={handleSelectIndexChanged} setSelectedBar={setSelectedBar}
                         />
                     </svg>
                 </Col>

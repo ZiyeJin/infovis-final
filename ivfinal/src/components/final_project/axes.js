@@ -25,7 +25,7 @@ function XAxis(props) {
         {xScale.ticks(5).map(tickValue => 
             <g key={tickValue} transform={`translate(${xScale(tickValue)}, ${0})`}>
                 <line y2={10} stroke='black' />
-                <text style={{ textAnchor:'end', fontSize:'10px' }} x={5} y={20}>
+                <text style={{ textAnchor:'end', fontSize:'12px' }} x={5} y={20}>
                     {tickValue}
                 </text>
             </g>
