@@ -2,34 +2,59 @@ import React from "react";
 import 'bootstrap/dist/css/bootstrap.css'
 import { csv, json } from "d3";
 import { Row, Col, Container } from "react-bootstrap";
-import { groupByAirline, groupByAirport } from "../components/final_project/utils";
+import { groupByIndex } from "../components/final_project/utils";
 import styles from "../styles/finalproject_styles.module.css";
-import { AirportMap }  from "../components/final_project/airportMap";
+import { Map }  from "../components/final_project/Map";
+import { TreeMap }  from "../components/final_project/treeMap";
 import { BarChart } from "../components/final_project/barChart";
-import { AirportBubble} from "../components/final_project/airportBubble";
 import {Tooltip} from '../components/final_project/tooltips';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const csvUrl = 'https://gist.githubusercontent.com/hogwild/9367e694e12bd2616205e4b3e91285d5/raw/9b451dd6bcc148c3553f550c92096a1a58e1e1e5/airline-routes.csv';
+
 const mapUrl = 'https://gist.githubusercontent.com/hogwild/26558c07f9e4e89306f864412fbdba1d/raw/5458902712c01c79f36dc28db33e345ee71487eb/countries.geo.json';
+const weightsUrl = "https://raw.githubusercontent.com/Log1c11/data/main/industry_weight.csv"
+const dataUrl = "https://raw.githubusercontent.com/Log1c11/data/main/merged_data.csv"
+const testdataUrl = "https://raw.githubusercontent.com/Log1c11/data/main/test_data.csv"
 
 
-function useData(csvPath){
+function useWeights(csvPath){
     const [dataAll, setData] = React.useState(null);
     React.useEffect(() => {
         csv(csvPath).then(data => {
             data.forEach(d => {
-                d.SourceLatitude = +d.SourceLatitude
-                d.SourceLongitude = +d.SourceLongitude
-                d.DestLatitude = +d.DestLatitude
-                d.DestLongitude = +d.DestLongitude
+                d.MktCapPer = +d.MktCapPer
             });
             setData(data);
         });
     }, []);
     return dataAll;
 }
+
+function useStkData(csvPath){
+    const [dataAll, setData] = React.useState(null);
+    React.useEffect(() => {
+        csv(csvPath).then(data => {
+            data.forEach(d => {
+                const [year, month, day] = d.Date.split("/").map(Number);
+                d.Date = new Date(year, month - 1, day); // Create Date object (month is zero-based)
+                
+                d.Latitude = +d.Latitude
+                d.Longitude = +d.Longitude
+                d.High = +d.High
+                d.Low = +d.Low
+                d.Close = +d.Close
+                d.Open = +d.Open
+                d.Volume = +d.Volume
+                d.Return = +d.Return
+                d.AdjClose = +d.AdjClose
+            });
+            setData(data);
+        });
+    }, []);
+    return dataAll;
+}
+
 
 function useMap(jsonPath) {
     const [data, setData] = React.useState(null);
@@ -42,11 +67,11 @@ function useMap(jsonPath) {
 }
 
 
-function AirlineRoutes(){
-    const [selectedAirline, setSelectedAirline]=React.useState(null);
+function IndexPerformance(){
     const [tooltipX, setTooltipX] = React.useState(null);
     const [tooltipY, setTooltipY] = React.useState(null);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [selectedIndex, setSelectedIndex]=React.useState(null);
 
     const barchart_width = 400;
     const barchart_height = 400;
@@ -58,17 +83,25 @@ function AirlineRoutes(){
     const hub_width = 400;
     const hub_height = 400;
 
-    const routes = useData(csvUrl);
+
+    //
+    const weights = useWeights(weightsUrl)
+    // console.log(weights)
+    const stkdata = useStkData(dataUrl)
+    // console.log(stkdata)
+    const testdata = useStkData(testdataUrl)
+    // console.log(testdata)
+    //
+
     const map = useMap(mapUrl);
-    if (!map || !routes) {
+    if (!map || !testdata) {
         return <pre>Loading...</pre>;
     };
-    let airlines = groupByAirline(routes);
-    let airports = groupByAirport(routes);
+
     
     
     const handleMouseMove = (event) => {
-        console.log('Mouse position:', event.pageX, event.pageY);
+        // console.log('Mouse position:', event.pageX, event.pageY);
         setTooltipX(event.pageX)
         setTooltipY(event.pageY)
     };
@@ -76,9 +109,10 @@ function AirlineRoutes(){
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
+    console.log(selectedDate)
     
-    // console.log(cities);
-    // console.log(airports);
+    // console.log(indices);
+
 
     return (<Container >
             <Row className={"justify-content-md-left"}>
@@ -91,7 +125,7 @@ function AirlineRoutes(){
                     <DatePicker
                         selected={selectedDate}
                         onChange={handleDateChange}
-                        dateFormat="MM/dd/yyyy"
+                        dateFormat="yyyy/MM/dd"
                     />
                 </Col>
             </Row>
@@ -100,17 +134,17 @@ function AirlineRoutes(){
                     <h2>Indexs</h2>
                     <svg className={styles.svgStyle} id={"barchart"} width={barchart_width} height={barchart_height} onMouseMove={handleMouseMove}>
                         <BarChart offsetX={barchart_margin.left} offsetY={barchart_margin.top} 
-                            height={barchart_inner_height} width={barchart_inner_width} data={airlines}
-                            selectedAirline={selectedAirline} setSelectedAirline={setSelectedAirline}
+                            height={barchart_inner_height} width={barchart_inner_width} alldata={stkdata}
+                            selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} selectedDate={selectedDate}
                         />
                     </svg>
                 </Col>
                 <Col lg={8}>
                     <h2>Stock Exchanges</h2>
                     <svg className={styles.svgStyle} id={"map"} width={map_width} height={map_height}>
-                        <AirportMap width={map_width} height={map_height} 
-                            countries={map} airports={airports} routes={routes}
-                            selectedAirline={selectedAirline}
+                        <Map width={map_width} height={map_height} 
+                            countries={map} alldata={stkdata}
+                            selectedIndex={selectedIndex} selectedDate={selectedDate} 
                         />
                     </svg>
                 </Col>
@@ -118,16 +152,16 @@ function AirlineRoutes(){
             <Row>
                 <Col lg={4}>
                     <h2>The Tree Map</h2>
-                    <svg className={styles.svgStyle} id={"bubble"} width={hub_width} height={hub_height}>
-                        <AirportBubble width={hub_width} height={hub_height} 
-                            routes={routes} selectedAirline={selectedAirline}
+                    <svg className={styles.svgStyle} id={"tree"} width={hub_width} height={hub_height}>
+                        <TreeMap width={hub_width} height={hub_height} 
+                            weights={weights} selectedIndex={selectedIndex} 
                         />
                     </svg>
                 </Col>
             </Row> 
             {tooltipX !== null && (
             <Tooltip
-                d={airlines.find((d) => d.AirlineID === selectedAirline)}
+                d={testdata.find((d) => d.Index === selectedIndex)}
                 x={tooltipX}
                 y={tooltipY}
             />
@@ -136,4 +170,4 @@ function AirlineRoutes(){
 }
 
 
-export default AirlineRoutes
+export default IndexPerformance
