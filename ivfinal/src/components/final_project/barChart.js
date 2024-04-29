@@ -6,7 +6,7 @@ import { XAxis, YAxis } from "./axes";
 export function BarChart (props) {
     const {offsetX, offsetY, alldata, height, width, selectedIndex, setSelectedIndex, selectedDate} = props;
     console.log(selectedDate)
-    // console.log(alldata)
+    //console.log(alldata)
     const data = alldata.filter((d) => {
         // Compare Date objects for equality
         return (

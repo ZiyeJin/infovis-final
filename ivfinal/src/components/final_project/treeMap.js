@@ -1,63 +1,97 @@
-import {useRef, React,useEffect} from "react";
-import { groupByIndex } from "./utils";
+import { useRef, useEffect } from "react";
+import { groupBy } from "lodash"; // Import lodash for grouping
 import * as d3 from "d3";
 
-function TreeMap({ width, height, weights, selectedIndex}) {
-    // console.log(groupByIndex(weights))
-    const svgRef = useRef();
+function TreeMap({ width, height, weights, selectedIndex }) {
+  // Ref for SVG element
+  const svgRef = useRef();
+  console.log(selectedIndex)
 
-    useEffect(() => {
-      if (!weights || !selectedIndex) return;
+  useEffect(() => {
+    if (!weights || !selectedIndex) return;
 
-      // Group weights data by index
-      const groupedData = groupByIndex(weights);
+    // Group weights data by index using lodash
+    // Filter the weights data based on the selected index
+    const filteredData = weights.filter((item) => item.Index === selectedIndex);
 
-      // Find the selected index in the grouped data
-      const selectedData = groupedData.find((group) => group.index === selectedIndex);
+    // Convert filtered data to array of objects
+    const data = filteredData.map((item) => ({
+      Industry: item.Industry,
+      MktCapPer: item.MktCapPer,
+      // Optionally include other properties from the data if needed
+    }));
 
-      if (!selectedData) return;
+    // Create hierarchy from filtered data
+    const root = d3
+      .hierarchy({ children: data })
+      .sum((d) => d.MktCapPer || 0); // Sum market cap percentages
 
-      const root = d3.hierarchy({ children: selectedData.MktCapPer })
-        .sum((d) => d.MktCapPer); 
 
-      const treemap = d3.treemap()
-        .size([width, height])
-        .padding(1)
-        .round(true);
+    // Initialize treemap layout
+    const treemap = d3
+      .treemap()
+      .size([width, height])
+      .padding(1)
+      .round(true);
 
-      treemap(root);
+    // Generate treemap layout
+    treemap(root);
 
-      const svg = d3.select(svgRef.current);
+    // Select SVG element
+    const svg = d3.select(svgRef.current);
 
-      svg.selectAll("rect")
-        .data(root.descendants().slice(1)) 
-        .enter()
-        .append("rect")
-        .attr("x", (d) => d.x0)
-        .attr("y", (d) => d.y0)
-        .attr("width", (d) => d.x1 - d.x0)
-        .attr("height", (d) => d.y1 - d.y0)
-        .style("fill", "#5a1e8a")
-        .style("stroke", "black")
-        .style("stroke-width", "2");
+    // Remove existing elements
+    svg.selectAll("*").remove();
 
-      // Add text labels
-      svg.selectAll("text")
-        .data(root.descendants().slice(1)) // Exclude the root node
-        .enter()
-        .append("text")
-        .attr("x", (d) => (d.x0 + d.x1) / 2)
-        .attr("y", (d) => (d.y0 + d.y1) / 2)
-        .attr("text-anchor", "middle")
-        .attr("dominant-baseline", "middle")
-        .style("fill", "#fff954")
-        .style("font-size", "16px")
-        .style("font-family", "cursive")
-        .text((d) => d.Industry); // Display component name as label
-    }, [weights, selectedIndex, width, height]);
+    // Append rectangles for each node
+    svg
+      .selectAll("rect")
+      .data(root.descendants().slice(1))
+      .enter()
+      .append("rect")
+      .attr("x", (d) => d.x0)
+      .attr("y", (d) => d.y0)
+      .attr("width", (d) => d.x1 - d.x0)
+      .attr("height", (d) => d.y1 - d.y0)
+      .style("fill", "#5a1e8a")
+      .style("stroke", "black")
+      .style("stroke-width", "2");
 
-    return <svg ref={svgRef} width={width} height={height}></svg>;
-    }
-    
-  
-export {TreeMap};
+    // Add text labels for Industry
+    svg
+      .selectAll(".industry-text")
+      .data(root.descendants().slice(1))
+      .enter()
+      .append("text")
+      .attr("class", "industry-text")
+      .attr("x", (d) => (d.x0 + d.x1) / 2)
+      .attr("y", (d) => (d.y0 + d.y1) / 2 - 10) // Position above the center
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .style("fill", "#fff954")
+      .style("font-size", "16px")
+      .style("font-family", "cursive")
+      .text((d) => d.data.Industry); // Display industry name as label
+
+      // Add text labels for MktCapPer below Industry
+    svg
+      .selectAll(".mktcap-text")
+      .data(root.descendants().slice(1))
+      .enter()
+      .append("text")
+      .attr("class", "mktcap-text")
+      .attr("x", (d) => (d.x0 + d.x1) / 2)
+      .attr("y", (d) => (d.y0 + d.y1) / 2 + 10) // Position below the center
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .style("fill", "#fff954")
+      .style("font-size", "12px")
+      .text((d) => d.data.MktCapPer.toFixed(2)); // Display MktCapPer below Industry
+
+  }, [weights, selectedIndex, width, height]); // Depend on relevant props and dimensions
+
+  // Return SVG element
+  return <svg ref={svgRef} width={width} height={height}></svg>;
+}
+
+export { TreeMap };

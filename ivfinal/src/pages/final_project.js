@@ -80,13 +80,13 @@ function IndexPerformance(){
     const barchart_inner_height = barchart_height - barchart_margin.top - barchart_margin.bottom;
     const map_width = 600;
     const map_height = 400;
-    const hub_width = 400;
-    const hub_height = 400;
+    const hub_width = 1000;
+    const hub_height = 600;
 
 
     //
     const weights = useWeights(weightsUrl)
-    // console.log(weights)
+    //console.log(weights)
     const stkdata = useStkData(dataUrl)
     // console.log(stkdata)
     const testdata = useStkData(testdataUrl)
@@ -109,7 +109,7 @@ function IndexPerformance(){
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-    console.log(selectedDate)
+    //console.log(selectedDate)
     
     // console.log(indices);
 
