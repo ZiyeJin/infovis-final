@@ -54,14 +54,15 @@ function TreeMap({ width, height, weights, selectedIndex }) {
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
       .style("fill", "#5a1e8a")
-      .style("stroke", "black")
-      .style("stroke-width", "2");
+      .style("stroke", "black");
+      // .style("stroke-width", "2");
 
     // Add text labels for Industry
     svg
       .selectAll(".industry-text")
       .data(root.descendants().slice(1))
       .enter()
+      .filter((d) => (d.x1 - d.x0) > 16) // Filter out small cells
       .append("text")
       .attr("class", "industry-text")
       .attr("x", (d) => (d.x0 + d.x1) / 2)
@@ -69,7 +70,8 @@ function TreeMap({ width, height, weights, selectedIndex }) {
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .style("fill", "#fff954")
-      .style("font-size", "16px")
+      // .style("font-size", "12px")
+      .style("font-size", (d) => `${Math.min(12, (d.x1 - d.x0) / 8)}px`) // Scale font size
       .style("font-family", "cursive")
       .text((d) => d.data.Industry); // Display industry name as label
 
@@ -78,6 +80,7 @@ function TreeMap({ width, height, weights, selectedIndex }) {
       .selectAll(".mktcap-text")
       .data(root.descendants().slice(1))
       .enter()
+      .filter((d) => (d.x1 - d.x0) > 16) // Filter out small cells
       .append("text")
       .attr("class", "mktcap-text")
       .attr("x", (d) => (d.x0 + d.x1) / 2)
@@ -85,7 +88,8 @@ function TreeMap({ width, height, weights, selectedIndex }) {
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "middle")
       .style("fill", "#fff954")
-      .style("font-size", "12px")
+      // .style("font-size", "12px")
+      .style("font-size", (d) => `${Math.min(12, (d.x1 - d.x0) / 12)}px`) // Scale font size
       .text((d) => d.data.MktCapPer.toFixed(2)); // Display MktCapPer below Industry
 
   }, [weights, selectedIndex, width, height]); // Depend on relevant props and dimensions

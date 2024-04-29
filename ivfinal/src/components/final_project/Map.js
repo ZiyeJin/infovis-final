@@ -19,33 +19,35 @@ function Map(props){
         );
     });
 
-    let projection = geoMercator();
-    projection.scale(97)
-            .translate([width / 2, height / 2 + 20]);
+    let projection = geoMercator().fitSize([width, height], countries);
+    projection.scale(100)
+            .translate([width / 2, height / 2]);
     const pathGenerator = geoPath().projection(projection);
 
-    return <g>
-        {countries.features.map((feature, index) => (
-                <path
-                    key={index}
-                    d={pathGenerator(feature)}
-                    fill="#eee"
-                    stroke="#ccc"
-                />
-            ))}
-        {data.map((d) => (
-            <circle
-                key={d.Index}
-                cx={projection([d.Longitude, d.Latitude])[0]}
-                cy={projection([d.Longitude, d.Latitude])[1]}
-                r={d.Index === selectedIndex ? 8 : 3} 
-                fill={d.Return < 0 ? "#008000" : "#FF0000"} 
-                onClick={() => handlePointClick(d.Index)}
-            />
-        ))}
-    </g>
-
-
+    return(
+        <svg width={width} height={height}>
+            <g>
+                {countries.features.map((feature, index) => (
+                        <path
+                            key={index}
+                            d={pathGenerator(feature)}
+                            fill="#eee"
+                            stroke="#ccc"
+                        />
+                    ))}
+                {data.map((d) => (
+                    <circle
+                        key={d.Index}
+                        cx={projection([d.Longitude, d.Latitude])[0]}
+                        cy={projection([d.Longitude, d.Latitude])[1]}
+                        r={d.Index === selectedIndex ? 8 : 3} 
+                        fill={d.Return < 0 ? "#008000" : "#FF0000"} 
+                        onClick={() => handlePointClick(d.Index)}
+                    />
+                ))}
+            </g>
+        </svg>
+    )
 }
 
 export { Map }

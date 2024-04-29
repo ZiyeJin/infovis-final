@@ -76,12 +76,12 @@ function IndexPerformance(){
 
     const barchart_width = 400;
     const barchart_height = 400;
-    const barchart_margin = { top: 10, bottom: 50, left: 130, right: 10 };
+    const barchart_margin = { top: 10, bottom: 50, left: 80, right: 100 };
     const barchart_inner_width = barchart_width - barchart_margin.left - barchart_margin.right;
     const barchart_inner_height = barchart_height - barchart_margin.top - barchart_margin.bottom;
-    const map_width = 600;
-    const map_height = 400;
-    const hub_width = 1000;
+    const map_width = 635;
+    const map_height = 600;
+    const hub_width = 635;
     const hub_height = 600;
 
 
@@ -114,23 +114,24 @@ function IndexPerformance(){
 
     return (<Container >
             <Row className={"justify-content-md-left"}>
-                <Col lg={10} >
+                <Col lg={12} >
                     <h1 className={styles.h1Style}>Indexs Performance</h1> 
                 </Col>
             </Row> 
             <Row>
-                <Col lg={3} md={2}>
+                <Col lg={3}>
+                    <h2>Calendar</h2>
                     <DatePicker
+                        inline
                         selected={selectedDate}
-                        onChange={handleDateChange}
+                        // onChange={handleDateChange}
+                        onChange={date => setSelectedDate(date)}
                         dateFormat="yyyy/MM/dd"
                         minDate={new Date('2022-01-03')}
                         maxDate={new Date('2022-11-08')}
                     />
                 </Col>
-            </Row>
-            <Row className={"justify-content-md-left"}>
-                <Col lg={4}>
+                <Col lg={3}>
                     <h2>Indexs</h2>
                     <svg className={styles.svgStyle} id={"barchart"} width={barchart_width} height={barchart_height} onMouseMove={handleMouseMove}>
                         <BarChart offsetX={barchart_margin.left} offsetY={barchart_margin.top} 
@@ -140,7 +141,9 @@ function IndexPerformance(){
                         />
                     </svg>
                 </Col>
-                <Col lg={8}>
+            </Row>
+            <Row className={"justify-content-md-left"}>
+                <Col lg={6}>
                     <h2>Stock Exchanges</h2>
                     <svg className={styles.svgStyle} id={"map"} width={map_width} height={map_height}>
                         <Map width={map_width} height={map_height} 
@@ -152,7 +155,7 @@ function IndexPerformance(){
                 </Col>
             </Row>
             <Row>
-                <Col lg={4}>
+                <Col lg={6}>
                     <h2>The Tree Map</h2>
                     <svg className={styles.svgStyle} id={"tree"} width={hub_width} height={hub_height}>
                         <TreeMap width={hub_width} height={hub_height} 
