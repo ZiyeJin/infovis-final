@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { groupBy } from "lodash"; // Import lodash for grouping
+// import { groupBy } from "lodash"; // Import lodash for grouping
 import * as d3 from "d3";
 
 function TreeMap({ width, height, weights, selectedIndex }) {

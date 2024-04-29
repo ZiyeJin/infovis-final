@@ -70,7 +70,7 @@ function useMap(jsonPath) {
 function IndexPerformance(){
     const [tooltipX, setTooltipX] = React.useState(null);
     const [tooltipY, setTooltipY] = React.useState(null);
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [selectedDate, setSelectedDate] = React.useState(new Date('2022-01-03'));
     const [selectedIndex, setSelectedIndex]=React.useState(null);
     const [selectedBar, setSelectedBar] = React.useState(null);
 
@@ -124,6 +124,8 @@ function IndexPerformance(){
                         selected={selectedDate}
                         onChange={handleDateChange}
                         dateFormat="yyyy/MM/dd"
+                        minDate={new Date('2022-01-03')}
+                        maxDate={new Date('2022-11-08')}
                     />
                 </Col>
             </Row>
