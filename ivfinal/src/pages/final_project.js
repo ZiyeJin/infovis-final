@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 const mapUrl = 'https://gist.githubusercontent.com/hogwild/26558c07f9e4e89306f864412fbdba1d/raw/5458902712c01c79f36dc28db33e345ee71487eb/countries.geo.json';
 const weightsUrl = "https://raw.githubusercontent.com/Log1c11/data/main/industry_weight.csv"
 const dataUrl = "https://raw.githubusercontent.com/Log1c11/data/main/merged_data.csv"
-const testdataUrl = "https://raw.githubusercontent.com/Log1c11/data/main/test_data.csv"
+
 
 
 function useWeights(csvPath){
@@ -88,10 +88,10 @@ function IndexPerformance(){
     //
     const weights = useWeights(weightsUrl)
     const stkdata = useStkData(dataUrl)
-    const testdata = useStkData(testdataUrl)
+   
 
     const map = useMap(mapUrl);
-    if (!map || !testdata) {
+    if (!map || !stkdata) {
         return <pre>Loading...</pre>;
     };
 
@@ -166,7 +166,7 @@ function IndexPerformance(){
             </Row> 
             {tooltipX !== null && (
             <Tooltip
-                d={testdata.find((d) => d.Index === selectedIndex)}
+                d={stkdata.find((d) => d.Index === selectedIndex)}
                 x={tooltipX}
                 y={tooltipY}
             />
