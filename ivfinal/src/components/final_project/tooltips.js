@@ -30,7 +30,7 @@ function Tooltip(props) {
         position: "absolute",
         textAlign: "left",
         width: "150px",
-        height: "180px",
+        height: "190px",
         padding: "10px",
         font: "12px sans-serif",
         background: "#9024ED",
