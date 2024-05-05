@@ -111,6 +111,12 @@ function IndexPerformance(){
         setSelectedBar(index);
     };
 
+    const isWeekday = (date) => {
+        const day = date.getDay();
+        return day !== 0 && day !== 6; // 0 for Sunday, 6 for Saturday
+    };
+
+
 
     return (<Container >
             <Row className={"justify-content-md-left"}>
@@ -127,6 +133,7 @@ function IndexPerformance(){
                         // onChange={handleDateChange}
                         onChange={date => setSelectedDate(date)}
                         dateFormat="yyyy/MM/dd"
+                        filterDate={isWeekday}
                         minDate={new Date('2022-01-03')}
                         maxDate={new Date('2022-11-08')}
                     />
@@ -166,9 +173,10 @@ function IndexPerformance(){
             </Row> 
             {tooltipX !== null && (
             <Tooltip
-                d={stkdata.find((d) => d.Index === selectedIndex)}
+                alldata={stkdata}
                 x={tooltipX}
                 y={tooltipY}
+                selectedDate={selectedDate} selectedIndex={selectedIndex} 
             />
             )}
             </Container>)

@@ -5,7 +5,6 @@ import { XAxis, YAxis } from "./axes";
 
 export function BarChart (props) {
     const {offsetX, offsetY, alldata, height, width, selectedIndex, setSelectedIndex, selectedDate, selectedBar, setSelectedBar} = props;
-    //console.log(selectedIndex)
     const data = alldata.filter((d) => {
         return (
             d.Date.getFullYear() === selectedDate.getFullYear() &&
@@ -14,14 +13,14 @@ export function BarChart (props) {
         );
     });
 
-    let maximunRet = max(data, d => d.Return);
-    let minimunRet = min(data, d => d.Return);
+    // let maximunRet = max(data, d => d.Return);
+    // let minimunRet = min(data, d => d.Return);
     
-    const xScale = scaleLinear().range([0, width]).domain([minimunRet, maximunRet]).nice();
+    // const xScale = scaleLinear().range([0, width]).domain([minimunRet, maximunRet]).nice();
+    const xScale = scaleLinear().range([0, width]).domain([-5, 5]).nice();
     const yScale = scaleBand().range([0, height]).domain(data.map(a => a.Index)).padding(0.2) //The domain is the list of ailines names
     let color = (d) => d.Index===selectedIndex? "#EF8BEE":"#5a1e8a";
-   
-    //const [selectedBar, setSelectedBar] = useState(null);
+    
     const onClick = (d) => {
         if (selectedBar === d.Index) {
             setSelectedIndex(null);

@@ -1,12 +1,30 @@
 import React, { useState } from "react";
 
 function Tooltip(props) {
-    const { d, x, y } = props;
+    const { alldata, x, y, selectedDate, selectedIndex} = props;
     const [showTooltip, setShowTooltip] = useState(true);
 
-    if (!d || x === null || !showTooltip) {
+    if (!alldata || selectedIndex === null || !showTooltip) {
         return null;
     }
+    console.log(selectedIndex)
+   
+    const data = alldata.filter((d) => {
+        return (
+            d.Date.getFullYear() === selectedDate.getFullYear() &&
+            d.Date.getMonth() === selectedDate.getMonth() &&
+            d.Date.getDate() === selectedDate.getDate() &&
+            d.Index === selectedIndex
+        );
+    });
+
+    const dat = data[0];
+    console.log(dat)
+    
+    if (data.length === 0) {
+        return null;
+    }
+
 
     const divStyle = {
         position: "absolute",
@@ -26,15 +44,15 @@ function Tooltip(props) {
 
     return (
         <div style={divStyle}>
-            <p>{d.Index}</p>
+            <p>{dat.Index}</p>
             <p>Trading Info:</p>
             <ul>
-                <li>Location: {d.Location}</li>
-                <li>Open: {d.Open.toFixed(2)}</li>
-                <li>High: {d.High.toFixed(2)}</li>
-                <li>Low: {d.Low.toFixed(2)}</li>
-                <li>Close: {d.Close.toFixed(2)}</li>
-                <li>Return%: {d.Return.toFixed(2)}</li>
+                <li>Location: {dat.Location}</li>
+                <li>Open: {dat.Open.toFixed(2)}</li>
+                <li>High: {dat.High.toFixed(2)}</li>
+                <li>Low: {dat.Low.toFixed(2)}</li>
+                <li>Close: {dat.Close.toFixed(2)}</li>
+                <li>Return%: {dat.Return.toFixed(2)}</li>
             </ul>
         </div>
     );
